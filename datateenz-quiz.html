@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Datateenz - JavaScript Learning</title>
+
+<!-- STYLES -->
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+}
+
+header {
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 45%;
+    background: #eee;
+}
+
+button:hover {
+    background: #ccc;
+}
+
+.correct {
+    background: #2ecc71 !important;
+    color: white;
+}
+
+.wrong {
+    background: #e74c3c !important;
+    color: white;
+}
+
+button:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.progress-bar {
+    height: 12px;
+    background: lightgray;
+    border-radius: 5px;
+}
+
+.progress {
+    height: 12px;
+    background: #2ecc71;
+    width: 0%;
+    border-radius: 5px;
+    text-align: center;
+    color: white;
+    font-size: 10px;
+}
+
+#timer {
+    font-weight: bold;
+}
+
+.low-time {
+    color: red;
+}
+
+.reset-btn {
+    background: red;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+<!-- HEADING -->
+<header>
+<h1>Datateenz</h1>
+<p>Interactive JavaScript Learning Module</p>
+</header>
+
+<div class="container">
+
+<!-- OBJECTIVES -->
+<div class="card">
+<h3>🎯 Objectives</h3>
+<ul>
+<li>Understand JavaScript fundamentals</li>
+<li>Learn how JavaScript handles user interactions</li>
+<li>Understand variables and how they store data</li>
+<li>Apply concepts through an interactive quiz</li>
+</ul>
+</div>
+
+<!-- JS TOPIC -->
+<div class="card">
+<h3>📘 What is JavaScript?</h3>
+<p>
+JavaScript is a programming language used to make web pages interactive.
+It allows users to click buttons, submit forms, and update content dynamically
+without reloading the page.
+</p>
+
+<p><b>Example:</b></p>
+<code>document.getElementById("demo").innerText = "Hello User";</code>
+</div>
+
+<!-- VARIABLE TOPIC -->
+<div class="card">
+<h3>📘 What is a Variable?</h3>
+<p>
+A variable is used to store data. It acts like a container that holds values
+which can be reused and modified later in the program.
+</p>
+
+<p><b>Example:</b></p>
+<code>let name = "John";</code>
+</div>
+
+<!-- TIMER -->
+<div class="card">
+<h3>⏳ Timer</h3>
+<p id="timer">Time Left: 60s</p>
+</div>
+
+<!-- QUIZ -->
+<div class="card">
+<h3>❓ Quiz</h3>
+<div id="quiz"></div>
+
+<p id="explanation"></p>
+
+<p>Score: <span id="score">0</span></p>
+<p>✔ Correct: <span id="correctCount">0</span></p>
+<p>❌ Wrong: <span id="wrongCount">0</span></p>
+
+<button class="reset-btn" onclick="resetQuiz()">Reset</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="card">
+<h3>📊 Progress</h3>
+<div class="progress-bar">
+<div class="progress" id="progress"></div>
+</div>
+</div>
+
+<!-- COMPLETION -->
+<div class="card">
+<h3>🏁 Completion</h3>
+<p id="completion">Complete the quiz to finish.</p>
+</div>
+
+</div>
+
+<!-- SCRIPTS -->
+<script>
+
+const questions = [
+{
+q: "What is JavaScript?",
+options: ["A styling tool", "A database", "A programming language", "A server"],
+answer: 2,
+exp: "JavaScript is a programming language used to create interactive web pages."
+},
+{
+q: "Where does JavaScript primarily run?",
+options: ["Browser", "Database", "Compiler", "Server",],
+answer: 0,
+exp: "JavaScript primarily runs inside web browsers."
+},
+{
+q: "Why is JavaScript used?",
+options: ["For styling", "To handle user interactions", "For hosting", "For storage"],
+answer: 1,
+exp: "JavaScript handles user interactions such as clicks and input."
+},
+{
+q: "What can JavaScript do?",
+options: ["Only design pages", "Act as a server", "Only store data", "Handle events like clicks"],
+answer: 3,
+exp: "JavaScript handles events such as clicks and form submissions."
+},
+{
+q: "What happens without JavaScript?",
+options: ["No HTML", "No CSS", "No interactivity" , "No server"],
+answer: 2,
+exp: "Without JavaScript, web pages become static."
+},
+{
+q: "What is a variable?",
+options: ["A styling method", "A way to store data", "A server connection", "A print command"],
+answer: 1,
+exp: "A variable stores data and allows reuse in a program."
+},
+{
+q: "Which keyword declares a variable?",
+options: ["define", "value", "let", "create"],
+answer: 2,
+exp: "The 'let' keyword is used to declare variables."
+},
+{
+q: "A variable acts like a?",
+options: ["Function", "Container", "Loop", "Server"],
+answer: 1,
+exp: "A variable acts as a container that stores values."
+},
+{
+q: "Which is correct JavaScript syntax?",
+options: ["create name", "var:name", "let name = 'John';", "name == John", ],
+answer: 2,
+exp: "Correct syntax is: let name = 'John';"
+},
+{
+q: "Why are variables important?",
+options: ["For styling", "For animation", "For hosting", "To store reusable data"],
+answer: 3,
+exp: "Variables help store and reuse data efficiently."
+}
+];
+//SCORES COUNTS
+let score = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = 0;
+let timeLeft = 60;
+let timerInterval;
+let quizEnded = false;
+
+function loadQuiz() {
+    const quizDiv = document.getElementById("quiz");
+    quizDiv.innerHTML = "";
+
+    questions.forEach((q, index) => {
+        let html = `<div>
+        <p>${index+1}. ${q.q}</p>`;
+        
+        q.options.forEach((opt, i) => {
+            html += `<button onclick="checkAnswer(${index}, ${i}, this)">${opt}</button>`;
+        });
+
+        html += `</div>`;
+        quizDiv.innerHTML += html;
+    });
+}
+//CHECK THE ANSWER
+function checkAnswer(qIndex, optionIndex, btn) {
+    if (quizEnded) return;
+
+    const questionDiv = btn.parentElement;
+    const buttons = questionDiv.querySelectorAll("button");
+
+    const correctIndex = questions[qIndex].answer;
+
+    buttons.forEach((button, i) => {
+        if (i === correctIndex) {
+            button.classList.add("correct");
+        } else if (i === optionIndex) {
+            button.classList.add("wrong");
+        }
+        button.disabled = true;
+    });
+
+    if (optionIndex === correctIndex) {
+        score++;
+        correctCount++;
+    } else {
+        wrongCount++;
+    }
+//TO SHOW THE CORRECT AND WRONG ANSWERS
+    document.getElementById("score").innerText = score;
+    document.getElementById("correctCount").innerText = correctCount;
+    document.getElementById("wrongCount").innerText = wrongCount;
+
+    document.getElementById("explanation").innerText = questions[qIndex].exp;
+
+    answered++;
+    updateProgress();
+
+    if(answered === questions.length) {
+        endQuiz();
+    }
+}
+//THE PROGRESS
+function updateProgress() {
+    let percent = (answered / questions.length) * 100;
+    const progress = document.getElementById("progress");
+    progress.style.width = percent + "%";
+    progress.innerText = Math.floor(percent) + "%";
+}
+//TIMER FOR THE QUIZ
+function startTimer() {
+    const timer = document.getElementById("timer");
+
+    timerInterval = setInterval(() => {
+        if (quizEnded) return;
+
+        timeLeft--;
+        timer.innerText = "Time Left: " + timeLeft + "s";
+
+        if(timeLeft <= 10) {
+            timer.classList.add("low-time");
+        }
+
+        if(timeLeft <= 0) {
+            clearInterval(timerInterval);
+            quizEnded = true;
+            document.getElementById("completion").innerText =
+                "⏰ Sorry, time is finished!";
+        }
+    }, 1000);
+}
+//ENDING
+function endQuiz() {
+    quizEnded = true;
+    clearInterval(timerInterval);
+
+    let msg = "";
+
+    if(score === 10) msg = "🔥 Excellent! Perfect score!";
+    else if(score >= 7) msg = "👍 Good job!";
+    else msg = "📚 Keep practicing!";
+
+    document.getElementById("completion").innerText =
+        `Final Score: ${score}/10 - ${msg}`;
+}
+//IF YOU CANT ANSWER WELL YOU CAN RESET THAT AND AGAIN ATTEND THE QUIZ
+function resetQuiz() {
+    score = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    answered = 0;
+    timeLeft = 60;
+    quizEnded = false;
+
+    document.getElementById("score").innerText = 0;
+    document.getElementById("correctCount").innerText = 0;
+    document.getElementById("wrongCount").innerText = 0;
+    document.getElementById("completion").innerText = "Complete the quiz to finish.";
+    document.getElementById("explanation").innerText = "";
+    document.getElementById("progress").style.width = "0%";
+    document.getElementById("progress").innerText = "";
+
+    clearInterval(timerInterval);
+    document.getElementById("timer").classList.remove("low-time");
+
+    loadQuiz();
+    startTimer();
+}
+
+loadQuiz();
+startTimer();
+
+</script>
+
+</body>
+</html>
