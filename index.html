@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Datateenz - JavaScript Learning</title>
 
 <style>
@@ -49,11 +50,11 @@ button {
     font-size: 14px;
 }
 
-/* Mobile view */
-@media (max-width: 600px) {
-    button {
-        width: 100%;
-    }
+/* Make options align nicely */
+#quiz div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 button:hover {
@@ -117,6 +118,34 @@ button:disabled {
 p, li {
     word-wrap: break-word;
 }
+
+@media (max-width: 600px) {
+
+    button {
+        width: 100%;
+    }
+
+    #quiz div {
+        display: block;
+    }
+
+    .container {
+        width: 95%;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+}
+
 </style>
 </head>
 
