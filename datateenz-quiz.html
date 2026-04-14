@@ -4,12 +4,16 @@
 <meta charset="UTF-8">
 <title>Datateenz - JavaScript Learning</title>
 
-<!-- STYLES -->
 <style>
 body {
     font-family: Arial;
     margin: 0;
     background: linear-gradient(to right, #1e3c72, #2a5298);
+}
+
+/* Fix layout issues */
+* {
+    box-sizing: border-box;
 }
 
 header {
@@ -18,26 +22,38 @@ header {
     padding: 20px;
 }
 
+/* Responsive container */
 .container {
-    width: 80%;
+    width: 90%;
+    max-width: 1000px;
     margin: auto;
 }
 
+/* Card UI */
 .card {
     background: white;
     padding: 20px;
-    margin: 20px 0;
+    margin: 15px 0;
     border-radius: 10px;
 }
 
+/* Buttons */
 button {
     padding: 10px;
     margin: 5px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 45%;
+    width: 48%;
     background: #eee;
+    font-size: 14px;
+}
+
+/* Mobile view */
+@media (max-width: 600px) {
+    button {
+        width: 100%;
+    }
 }
 
 button:hover {
@@ -59,6 +75,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
+/* Progress bar */
 .progress-bar {
     height: 12px;
     background: lightgray;
@@ -75,8 +92,16 @@ button:disabled {
     font-size: 10px;
 }
 
+/* Timer */
 #timer {
     font-weight: bold;
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    #timer {
+        font-size: 14px;
+    }
 }
 
 .low-time {
@@ -87,11 +112,16 @@ button:disabled {
     background: red;
     color: white;
 }
+
+/* Text wrapping fix */
+p, li {
+    word-wrap: break-word;
+}
 </style>
 </head>
 
 <body>
-<!-- HEADING -->
+
 <header>
 <h1>Datateenz</h1>
 <p>Interactive JavaScript Learning Module</p>
@@ -99,7 +129,6 @@ button:disabled {
 
 <div class="container">
 
-<!-- OBJECTIVES -->
 <div class="card">
 <h3>🎯 Objectives</h3>
 <ul>
@@ -110,7 +139,6 @@ button:disabled {
 </ul>
 </div>
 
-<!-- JS TOPIC -->
 <div class="card">
 <h3>📘 What is JavaScript?</h3>
 <p>
@@ -118,30 +146,23 @@ JavaScript is a programming language used to make web pages interactive.
 It allows users to click buttons, submit forms, and update content dynamically
 without reloading the page.
 </p>
-
-<p><b>Example:</b></p>
 <code>document.getElementById("demo").innerText = "Hello User";</code>
 </div>
 
-<!-- VARIABLE TOPIC -->
 <div class="card">
 <h3>📘 What is a Variable?</h3>
 <p>
 A variable is used to store data. It acts like a container that holds values
 which can be reused and modified later in the program.
 </p>
-
-<p><b>Example:</b></p>
 <code>let name = "John";</code>
 </div>
 
-<!-- TIMER -->
 <div class="card">
 <h3>⏳ Timer</h3>
 <p id="timer">Time Left: 60s</p>
 </div>
 
-<!-- QUIZ -->
 <div class="card">
 <h3>❓ Quiz</h3>
 <div id="quiz"></div>
@@ -155,7 +176,6 @@ which can be reused and modified later in the program.
 <button class="reset-btn" onclick="resetQuiz()">Reset</button>
 </div>
 
-<!-- PROGRESS -->
 <div class="card">
 <h3>📊 Progress</h3>
 <div class="progress-bar">
@@ -163,7 +183,6 @@ which can be reused and modified later in the program.
 </div>
 </div>
 
-<!-- COMPLETION -->
 <div class="card">
 <h3>🏁 Completion</h3>
 <p id="completion">Complete the quiz to finish.</p>
@@ -171,8 +190,9 @@ which can be reused and modified later in the program.
 
 </div>
 
-<!-- SCRIPTS -->
 <script>
+
+console.log("Quiz created by Sudharsan");
 
 const questions = [
 {
@@ -183,7 +203,7 @@ exp: "JavaScript is a programming language used to create interactive web pages.
 },
 {
 q: "Where does JavaScript primarily run?",
-options: ["Browser", "Database", "Compiler", "Server",],
+options: ["Browser", "Database", "Compiler", "Server"],
 answer: 0,
 exp: "JavaScript primarily runs inside web browsers."
 },
@@ -201,7 +221,7 @@ exp: "JavaScript handles events such as clicks and form submissions."
 },
 {
 q: "What happens without JavaScript?",
-options: ["No HTML", "No CSS", "No interactivity" , "No server"],
+options: ["No HTML", "No CSS", "No interactivity", "No server"],
 answer: 2,
 exp: "Without JavaScript, web pages become static."
 },
@@ -225,7 +245,7 @@ exp: "A variable acts as a container that stores values."
 },
 {
 q: "Which is correct JavaScript syntax?",
-options: ["create name", "var:name", "let name = 'John';", "name == John", ],
+options: ["create name", "var:name", "let name = 'John';", "name == John"],
 answer: 2,
 exp: "Correct syntax is: let name = 'John';"
 },
@@ -236,7 +256,7 @@ answer: 3,
 exp: "Variables help store and reuse data efficiently."
 }
 ];
-//SCORES COUNTS
+
 let score = 0;
 let correctCount = 0;
 let wrongCount = 0;
@@ -261,7 +281,7 @@ function loadQuiz() {
         quizDiv.innerHTML += html;
     });
 }
-//CHECK THE ANSWER
+
 function checkAnswer(qIndex, optionIndex, btn) {
     if (quizEnded) return;
 
@@ -285,7 +305,7 @@ function checkAnswer(qIndex, optionIndex, btn) {
     } else {
         wrongCount++;
     }
-//TO SHOW THE CORRECT AND WRONG ANSWERS
+
     document.getElementById("score").innerText = score;
     document.getElementById("correctCount").innerText = correctCount;
     document.getElementById("wrongCount").innerText = wrongCount;
@@ -299,14 +319,14 @@ function checkAnswer(qIndex, optionIndex, btn) {
         endQuiz();
     }
 }
-//THE PROGRESS
+
 function updateProgress() {
     let percent = (answered / questions.length) * 100;
     const progress = document.getElementById("progress");
     progress.style.width = percent + "%";
     progress.innerText = Math.floor(percent) + "%";
 }
-//TIMER FOR THE QUIZ
+
 function startTimer() {
     const timer = document.getElementById("timer");
 
@@ -328,7 +348,7 @@ function startTimer() {
         }
     }, 1000);
 }
-//ENDING
+
 function endQuiz() {
     quizEnded = true;
     clearInterval(timerInterval);
@@ -342,7 +362,7 @@ function endQuiz() {
     document.getElementById("completion").innerText =
         `Final Score: ${score}/10 - ${msg}`;
 }
-//IF YOU CANT ANSWER WELL YOU CAN RESET THAT AND AGAIN ATTEND THE QUIZ
+
 function resetQuiz() {
     score = 0;
     correctCount = 0;
